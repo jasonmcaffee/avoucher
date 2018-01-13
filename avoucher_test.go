@@ -1,7 +1,7 @@
 package avoucher_test
 
 import (
-	. "go-validate/avoucher"
+	. "avoucher"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -23,6 +23,4 @@ var _ = Describe("Avoucher", func() {
 		})
 
 	})
-
-
 })
