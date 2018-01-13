@@ -2,7 +2,7 @@ package avoucher
 
 type(
 	Schema struct{
-		//the type of object we are validating. todo: allow for AnyKind, so that we only validate keys.
+		//the type of object we are validating.
 		Kind interface{}
 		isKindSet bool
 
@@ -27,9 +27,9 @@ func (s *Schema) SetKeys(keys map[string]*Schema) *Schema{
 	return s
 }
 
-func (s *Schema) Validate(objToValidate interface{}) (bool, error){
-	isValid, err := Validate(s, objToValidate)
-	return isValid, err
+func (s *Schema) Validate(objToValidate interface{}) ValidationResult{
+	validationResult := Validate(s, objToValidate)
+	return validationResult
 }
 
 
