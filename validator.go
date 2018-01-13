@@ -12,6 +12,7 @@ type ValidationResult struct{
 	ActualValue interface{}
 }
 
+//GetMessage returns an empty string if Message is nil. Returns Message value otherwise.
 func (v *ValidationResult) GetMessage() string{
 	message := ""
 	if v.Message != nil{
@@ -20,6 +21,7 @@ func (v *ValidationResult) GetMessage() string{
 	return message
 }
 
+//SetMessage sets the Message as pointer to message param
 func (v *ValidationResult) SetMessage(message string){
 	v.Message = &message
 }
@@ -33,14 +35,20 @@ var DefaultValidationPlugins []ValidationPlugin = []ValidationPlugin{
 }
 
 //Validate validates by iterating over the defaultValidationPlugins.
-//Validation is stopped when
+//Validation is stopped as soon as a validation fails/returns false
 func Validate(schema *Schema, objToValidate interface{}) ValidationResult{
-	validationResult := ValidateKind(schema, objToValidate)
-	return validationResult
+	return ValidateUsingValidationPlugins(schema, objToValidate, DefaultValidationPlugins)
 }
 
 func ValidateUsingValidationPlugins(schema *Schema, objToValidate interface{}, validationPlugins []ValidationPlugin) ValidationResult{
- return ValidationResult{}
+	validationResult := ValidationResult{IsValid:true}
+	for _, validationPlugin := range validationPlugins{
+		validationResult = validationPlugin(schema, objToValidate)
+		if !validationResult.IsValid{
+			return validationResult
+		}
+	}
+	return validationResult
 }
 
 func ValidateKind(schema *Schema, objToValidate interface{}) ValidationResult{
