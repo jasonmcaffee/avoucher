@@ -16,10 +16,18 @@ var _ = Describe("Avoucher", func() {
 			schema := NewSchema()
 			isValid := schema.SetKind("").Validate("some string")
 			Expect(isValid).To(Equal(true))
+
+			isValid = schema.Validate(123)
+			Expect(isValid).To(Equal(false))
 		})
 
 		It("should validate int", func(){
+			schema := NewSchema()
+			isValid := schema.SetKind(123).Validate(43)
+			Expect(isValid).To(Equal(true))
 
+			isValid = schema.Validate("asdf")
+			Expect(isValid).To(Equal(false))
 		})
 
 	})

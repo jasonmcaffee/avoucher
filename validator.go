@@ -12,8 +12,8 @@ func Validate(schema Schema, objToValidate interface{}) bool{
 }
 
 func validateKind(schema Schema, objToValidate interface{}) bool{
-	schemaTypeKind := reflect.TypeOf(schema.Kind).Kind()
-	objTypeKind := reflect.TypeOf(objToValidate).Kind()
-	isSameKind := schemaTypeKind == objTypeKind
+	schemaType := reflect.TypeOf(schema.Kind)
+	objType := reflect.TypeOf(objToValidate)
+	isSameKind := schemaType == objType
 	return isSameKind
 }
