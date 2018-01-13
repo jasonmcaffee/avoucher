@@ -5,29 +5,31 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"fmt"
 )
 
 var _ = Describe("Avoucher", func() {
-	fmt.Println("running tests")
 
 	Describe("Kind Validation", func(){
 		It("should validate string", func(){
 			schema := NewSchema()
-			isValid := schema.SetKind("").Validate("some string")
+			isValid, err := schema.SetKind("").Validate("some string")
 			Expect(isValid).To(Equal(true))
+			Expect(err).To(BeNil())
 
-			isValid = schema.Validate(123)
+			isValid, err = schema.Validate(123)
 			Expect(isValid).To(Equal(false))
+			Expect(err).To(BeNil())
 		})
 
 		It("should validate int", func(){
 			schema := NewSchema()
-			isValid := schema.SetKind(123).Validate(43)
+			isValid, err := schema.SetKind(123).Validate(43)
 			Expect(isValid).To(Equal(true))
+			Expect(err).To(BeNil())
 
-			isValid = schema.Validate("asdf")
+			isValid, err = schema.Validate("asdf")
 			Expect(isValid).To(Equal(false))
+			Expect(err).To(BeNil())
 		})
 
 		It("should validate custom structs", func(){
@@ -38,11 +40,13 @@ var _ = Describe("Avoucher", func() {
 				Species string
 			}
 			schema := NewSchema()
-			isValid := schema.SetKind(Person{Name:"Jason"}).Validate(Person{Name:"Jason"})
+			isValid, err := schema.SetKind(Person{Name:"Jason"}).Validate(Person{Name:"Jason"})
 			Expect(isValid).To(Equal(true))
+			Expect(err).To(BeNil())
 
-			isValid = schema.Validate(Animal{Species:"Lion"})
+			isValid, err = schema.Validate(Animal{Species:"Lion"})
 			Expect(isValid).To(Equal(false))
+			Expect(err).To(BeNil())
 		})
 
 		It("should validate pointers to custom structs", func(){
@@ -53,14 +57,17 @@ var _ = Describe("Avoucher", func() {
 				Species string
 			}
 			schema := NewSchema()
-			isValid := schema.SetKind(&Person{}).Validate(&Person{Name:"Jason"})
+			isValid, err := schema.SetKind(&Person{}).Validate(&Person{Name:"Jason"})
 			Expect(isValid).To(Equal(true))
+			Expect(err).To(BeNil())
 
-			isValid = schema.SetKind(Person{}).Validate(&Person{Name:"Jason"})
+			isValid, err = schema.SetKind(Person{}).Validate(&Person{Name:"Jason"})
 			Expect(isValid).To(Equal(false))
+			Expect(err).To(BeNil())
 
-			isValid = schema.Validate(&Animal{Species:"Lion"})
+			isValid, err = schema.Validate(&Animal{Species:"Lion"})
 			Expect(isValid).To(Equal(false))
+			Expect(err).To(BeNil())
 		})
 
 	})
