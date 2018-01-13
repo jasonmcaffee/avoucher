@@ -1,5 +1,7 @@
 package avoucher
 
+import "reflect"
+
 func Validate(schema Schema, objToValidate interface{}) bool{
 	isValid := validateKind(schema, objToValidate)
 	if !isValid {
@@ -10,5 +12,8 @@ func Validate(schema Schema, objToValidate interface{}) bool{
 }
 
 func validateKind(schema Schema, objToValidate interface{}) bool{
-	return true
+	schemaTypeKind := reflect.TypeOf(schema.Kind).Kind()
+	objTypeKind := reflect.TypeOf(objToValidate).Kind()
+	isSameKind := schemaTypeKind == objTypeKind
+	return isSameKind
 }

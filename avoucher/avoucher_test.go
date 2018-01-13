@@ -11,10 +11,18 @@ import (
 var _ = Describe("Avoucher", func() {
 	fmt.Println("running tests")
 
-	It("should validate kind", func(){
-		schema := NewSchema()
-		isValid := schema.SetKind("").Validate("some string")
-		Expect(isValid).To(Equal(true))
+	Describe("Kind Validation", func(){
+		It("should validate string", func(){
+			schema := NewSchema()
+			isValid := schema.SetKind("").Validate("some string")
+			Expect(isValid).To(Equal(true))
+		})
+
+		It("should validate int", func(){
+
+		})
+
 	})
+
 
 })
