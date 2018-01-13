@@ -30,5 +30,20 @@ var _ = Describe("Avoucher", func() {
 			Expect(isValid).To(Equal(false))
 		})
 
+		It("should validate custom structs", func(){
+			type Person struct{
+				Name string
+			}
+			type Animal struct{
+				Species string
+			}
+			schema := NewSchema()
+			isValid := schema.SetKind(Person{Name:"Jason"}).Validate(Person{Name:"Jason"})
+			Expect(isValid).To(Equal(true))
+
+			isValid = schema.Validate(Animal{Species:"Lion"})
+			Expect(isValid).To(Equal(false))
+		})
+
 	})
 })
