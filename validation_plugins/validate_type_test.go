@@ -16,7 +16,7 @@ var _ = Describe("Validate Type", func() {
 		Expect(validationResult.IsValid()).To(Equal(true))
 	})
 
-	It("should validate string", func() {
+	It("should validate string typs", func() {
 		schema := Avoucher()
 		validationResult := schema.SetType("").Validate("some string")
 		Expect(validationResult.IsValid()).To(Equal(true))
@@ -26,7 +26,7 @@ var _ = Describe("Validate Type", func() {
 		fmt.Println(validationResult.GetMessage())
 	})
 
-	It("should validate int", func() {
+	It("should validate int types", func() {
 		schema := Avoucher()
 		validationResult := schema.SetType(123).Validate(43)
 		Expect(validationResult.IsValid()).To(Equal(true))
@@ -36,7 +36,7 @@ var _ = Describe("Validate Type", func() {
 		fmt.Println(validationResult.GetMessage())
 	})
 
-	It("should validate custom structs", func() {
+	It("should validate custom struct types", func() {
 		type Person struct {
 			Name string
 		}
@@ -52,7 +52,7 @@ var _ = Describe("Validate Type", func() {
 		fmt.Println(validationResult.GetMessage())
 	})
 
-	It("should validate pointers to custom structs", func() {
+	It("should validate pointers to custom struct types", func() {
 		type Person struct {
 			Name string
 		}
