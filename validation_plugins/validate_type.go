@@ -4,7 +4,6 @@ import (
 	. "avoucher/interfaces"
 	. "avoucher/models"
 	"fmt"
-	"reflect"
 )
 
 //ValidateTypePlugin extends ValidationPlugin by embedding base validationPlugin struct
@@ -22,10 +21,9 @@ func NewValidateTypePlugin() ValidationPlugin{
 }
 
 //ValidateType is the validation function which determines if the schema.Type is the same as the objToValidate's Type.
-func (v *ValidateTypePlugin) ValidateType(schema Schema, objToValidate interface{}) ValidationResult {
+func (v *ValidateTypePlugin) ValidateType(schema Schema, reflectedObjectToValidate ReflectedObjectToValidate) ValidationResult {
 	//use embedded CreateValidationResult to set IsValid = true, TestName = v.Name
 	validationResult := v.CreateValidationResult()
-
 	//consider valid to be true when Kind is not set
 	if schema.GetIsTypeSet() == false {
 		return validationResult
@@ -33,7 +31,7 @@ func (v *ValidateTypePlugin) ValidateType(schema Schema, objToValidate interface
 
 	//reflect the types
 	schemaType := schema.GetTypeReflectedType()
-	objType := reflect.TypeOf(objToValidate)
+	objType := reflectedObjectToValidate.GetReflectedType()
 
 	//determine if they are the same types
 	isSameKind := schemaType == objType

@@ -21,12 +21,13 @@ func (v *validator) Validate(schema Schema, objToValidate interface{}) Validatio
 }
 
 func (v *validator) ValidateUsingValidationPlugins(schema Schema, objToValidate interface{}, validationPlugins []ValidationPlugin) ValidationResult {
+	reflectedObjectToValidate := NewReflectedObjectToValidate(objToValidate)
 	validationResult := NewValidationResult()
 	validationResult.SetIsValid(true)
 	validationResult.SetTestName("None")
 
 	for _, validationPlugin := range validationPlugins {
-		validationResult = validationPlugin.GetValidationFunc()(schema, objToValidate)
+		validationResult = validationPlugin.GetValidationFunc()(schema, reflectedObjectToValidate)
 		if !validationResult.IsValid() {
 			return validationResult
 		}
