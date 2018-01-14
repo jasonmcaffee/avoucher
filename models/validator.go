@@ -16,11 +16,11 @@ func NewValidator(validationPlugins []ValidationPlugin) Validator{
 
 //Validate validates by iterating over the defaultValidationPlugins.
 //Validation is stopped as soon as a validation fails/returns false
-func (v *validator) Validate(schema ReflectedSchema, objToValidate interface{}) ValidationResult {
+func (v *validator) Validate(schema Schema, objToValidate interface{}) ValidationResult {
 	return v.ValidateUsingValidationPlugins(schema, objToValidate, v.ValidationPlugins)
 }
 
-func (v *validator) ValidateUsingValidationPlugins(schema ReflectedSchema, objToValidate interface{}, validationPlugins []ValidationPlugin) ValidationResult {
+func (v *validator) ValidateUsingValidationPlugins(schema Schema, objToValidate interface{}, validationPlugins []ValidationPlugin) ValidationResult {
 	validationResult := NewValidationResult()
 	validationResult.SetIsValid(true)
 	validationResult.SetTestName("None")

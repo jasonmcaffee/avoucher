@@ -22,17 +22,17 @@ func NewValidateTypePlugin() ValidationPlugin{
 }
 
 //ValidateType is the validation function which determines if the schema.Type is the same as the objToValidate's Type.
-func (v *ValidateTypePlugin) ValidateType(reflectedSchema ReflectedSchema, objToValidate interface{}) ValidationResult {
+func (v *ValidateTypePlugin) ValidateType(schema Schema, objToValidate interface{}) ValidationResult {
 	//use embedded CreateValidationResult to set IsValid = true, TestName = v.Name
 	validationResult := v.CreateValidationResult()
-	schema := reflectedSchema.GetSchema()
+
 	//consider valid to be true when Kind is not set
 	if schema.GetIsTypeSet() == false {
 		return validationResult
 	}
 
 	//reflect the types
-	schemaType := reflect.TypeOf(schema.GetType())
+	schemaType := schema.GetTypeReflectedType()
 	objType := reflect.TypeOf(objToValidate)
 
 	//determine if they are the same types
