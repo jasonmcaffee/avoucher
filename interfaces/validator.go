@@ -1,5 +1,5 @@
 package interfaces
 
 type Validator interface{
-	Validate(schema Schema, objToValidate interface{}) ValidationResult
+	Validate(reflectedSchema ReflectedSchema, objToValidate interface{}) ValidationResult
 }
