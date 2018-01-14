@@ -9,7 +9,7 @@ import (
 //ValidateTypePlugin extends ValidationPlugin by embedding base validationPlugin struct
 //This allows us to get free funcs defined in validationPlugin, which are required by the ValidationPlugin interface.
 type ValidateKeysPlugin struct {
-	//Get func implementations by embedding
+	//Get func implementations defined in validationPlugin by embedding
 	ValidationPlugin
 }
 
@@ -20,26 +20,32 @@ func NewValidateKeysPlugin() ValidationPlugin{
 	return validationKeysPlugin
 }
 
-//ValidateKeys
+//ValidateKeys iterates over each Key (property name + schema) defined in the schema.
+//Ensures the property name exists on the objectToValidate.
+//Ensures the property value meets Schema criteria.
+//Stops validating when first invalid property is encountered.
+//TODO: provide option to continue validating when invalid property is encountered.
 func (v *ValidateKeysPlugin) ValidateKeys(schema Schema, reflectedObjectToValidate ReflectedObjectToValidate) ValidationResult {
 	//use embedded CreateValidationResult to set IsValid = true, TestName = v.Name
 	validationResult := v.CreateValidationResult()
 
-	//func getField(v *Vertex, field string) int {
-	//	r := reflect.ValueOf(v)
-	//	f := reflect.Indirect(r).FieldByName(field)
-	//	return int(f.Int())
-	//}
+	//get reflection objects needed in order to access Fields
 	reflectedObjectValue := reflect.ValueOf(reflectedObjectToValidate.GetObjectToValidate())
 	reflectedObjectIndirect := reflect.Indirect(reflectedObjectValue)
+
+	//iterate over each Key defined in the schema and ensure it exists on the objectToValidate
 	schemaKeys := schema.GetKeys()
 	for keyName, schema := range schemaKeys {
+		//get the field by name
 		field := reflectedObjectIndirect.FieldByName(keyName)
-		//fieldValue := reflect.ValueOf(field)
+
+		//IsValid == false when the field doesn't exist
 		if !field.IsValid() {
 			validationResult.SetIsValid(false)
 			return validationResult
 		}
+
+		//cast the field as an interface, then pass it to the Schema assigned to the key
 		fieldAsInterface := field.Interface()
 		validationResult = schema.Validate(fieldAsInterface)
 		if !validationResult.IsValid(){
