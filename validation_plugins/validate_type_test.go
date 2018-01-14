@@ -11,6 +11,8 @@ import (
 )
 
 type GoNumericTypeInstances struct{
+	//cache of all property values on this object
+	AllNumericTypeInstances []interface{}
 	//Numeric Types - https://golang.org/ref/spec#Numeric_types
 	//uint8       the set of all unsigned  8-bit integers (0 to 255)
 	//uint16      the set of all unsigned 16-bit integers (0 to 65535)
@@ -39,11 +41,25 @@ type GoNumericTypeInstances struct{
 }
 
 func (g *GoNumericTypeInstances) GetAllNumericTypeInstances() []interface{}{
-	return []interface{}{
-		g.Int,
-		g.Int8,
-		g.Uint,
+	return g.AllNumericTypeInstances
+}
+
+func NewGoNumericTypeInstances() *GoNumericTypeInstances{
+	goNumericTypeInstances := &GoNumericTypeInstances{}
+	goNumericTypeInstances.AllNumericTypeInstances = BuildSliceOfAllFieldValuesInObject(goNumericTypeInstances)
+	return goNumericTypeInstances
+}
+
+func BuildSliceOfAllFieldValuesInObject(objToReflect interface{})[]interface{}{
+	result := []interface{}{}
+	reflectedObjectValue := reflect.ValueOf(objToReflect)
+	reflectedObjectIndirect := reflect.Indirect(reflectedObjectValue)
+	for i := 0; i < reflectedObjectIndirect.NumField(); i++ {
+		field := reflectedObjectIndirect.Field(i)
+		fieldAsInterface := field.Interface()
+		result = append(result, fieldAsInterface)
 	}
+	return result
 }
 
 type GoTypeInstances struct{
@@ -56,7 +72,7 @@ func (g *GoTypeInstances) GetAllTypeInstances() []interface{}{
 
 func NewGoTypeInstances() *GoTypeInstances{
 	goTypeInstances := &GoTypeInstances{
-		&GoNumericTypeInstances{},
+		GoNumericTypeInstances: NewGoNumericTypeInstances(),
 	}
 	return goTypeInstances
 }
@@ -86,13 +102,13 @@ var _ = Describe("Validate Type", func() {
 	}
 
 	Describe("Numeric Type Validation", func(){
-		It("should provide TypeInt function which strictly validates type is int", func() {
+		It("should provide Int function which helps strictly validate that objectToValidate type is int", func() {
 			s := Avoucher().Int()
 			Expect(s.Validate(gti.Int).IsValid()).To(Equal(true))
 			Expect(otherTypesAreInvalid(s)).To(Equal(true))
 		})
 
-		It("should provide TypeInt function which strictly validates type is int", func() {
+		It("should provide Uint function which helps strictly validate that objectToValidate type is uint", func() {
 			s := Avoucher().Uint()
 			Expect(s.Validate(gti.Uint).IsValid()).To(Equal(true))
 			Expect(otherTypesAreInvalid(s)).To(Equal(true))
