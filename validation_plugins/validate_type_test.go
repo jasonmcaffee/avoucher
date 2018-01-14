@@ -10,8 +10,7 @@ import (
 	"reflect"
 )
 
-var _ = Describe("Validate Type", func() {
-
+type GoNumericTypeInstances struct{
 	//Numeric Types - https://golang.org/ref/spec#Numeric_types
 	//uint8       the set of all unsigned  8-bit integers (0 to 255)
 	//uint16      the set of all unsigned 16-bit integers (0 to 65535)
@@ -33,17 +32,48 @@ var _ = Describe("Validate Type", func() {
 	//rune        alias for int32
 	//uint     		either 32 or 64 bits
 	//int      		same size as uint
-	var tInt int
-	var tUint uint
+	Int int
+	Int8 int8
 
-	allTypes := []interface{}{
-		tInt,
-		tUint,
+	Uint uint
+}
+
+func (g *GoNumericTypeInstances) GetAllNumericTypeInstances() []interface{}{
+	return []interface{}{
+		g.Int,
+		g.Int8,
+		g.Uint,
 	}
+}
 
+type GoTypeInstances struct{
+	*GoNumericTypeInstances
+}
+
+func (g *GoTypeInstances) GetAllTypeInstances() []interface{}{
+	return g.GetAllNumericTypeInstances()
+}
+
+func NewGoTypeInstances() *GoTypeInstances{
+	goTypeInstances := &GoTypeInstances{
+		&GoNumericTypeInstances{},
+	}
+	return goTypeInstances
+}
+
+
+var _ = Describe("Validate Type", func() {
+
+	goTypeInstances := NewGoTypeInstances()
+	gti := goTypeInstances
+
+	//helper function to assert that when a schema type is set, all other types should be invalid
+	//calls IsValid on all type instances defined in GoTypeInstances.GetAllTypeInstances
+	//returns true when IsValid returns false for all types other than the schema's Type
 	otherTypesAreInvalid := func(schema Schema) bool{
 		reflectedSchemaType := schema.GetTypeReflectedType()
-		for _, t := range allTypes {
+		for _, t := range goTypeInstances.GetAllTypeInstances() {
+			//don't check IsValid() when the t is the same as the schema type (should be valid in this case, but invalid in all other cases)
 			reflectedTType := reflect.TypeOf(t)
 			if reflectedTType == reflectedSchemaType{
 				continue
@@ -58,77 +88,75 @@ var _ = Describe("Validate Type", func() {
 	Describe("Numeric Type Validation", func(){
 		It("should provide TypeInt function which strictly validates type is int", func() {
 			s := Avoucher().Int()
-			Expect(s.Validate(tInt).IsValid()).To(Equal(true))
+			Expect(s.Validate(gti.Int).IsValid()).To(Equal(true))
 			Expect(otherTypesAreInvalid(s)).To(Equal(true))
 		})
 
 		It("should provide TypeInt function which strictly validates type is int", func() {
 			s := Avoucher().Uint()
-			Expect(s.Validate(tUint).IsValid()).To(Equal(true))
+			Expect(s.Validate(gti.Uint).IsValid()).To(Equal(true))
 			Expect(otherTypesAreInvalid(s)).To(Equal(true))
 		})
 	})
 
-	It("should validate when no kind is set", func() {
-		schema := Avoucher()
-		validationResult := schema.Validate(123)
-		Expect(validationResult.IsValid()).To(Equal(true))
+	Describe("Misc Type Validation", func(){
+		It("should validate when no kind is set", func() {
+			schema := Avoucher()
+			validationResult := schema.Validate(123)
+			Expect(validationResult.IsValid()).To(Equal(true))
+		})
+
+		It("should validate string types", func() {
+			schema := Avoucher()
+			validationResult := schema.SetType("").Validate("some string")
+			Expect(validationResult.IsValid()).To(Equal(true))
+
+			validationResult = schema.Validate(123)
+			Expect(validationResult.IsValid()).To(Equal(false))
+			fmt.Println(validationResult.GetMessage())
+		})
 	})
 
-	It("should validate string types", func() {
-		schema := Avoucher()
-		validationResult := schema.SetType("").Validate("some string")
-		Expect(validationResult.IsValid()).To(Equal(true))
 
-		validationResult = schema.Validate(123)
-		Expect(validationResult.IsValid()).To(Equal(false))
-		fmt.Println(validationResult.GetMessage())
+
+	Describe("Custom Type Validation", func(){
+		It("should validate custom struct types", func() {
+			type Person struct {
+				Name string
+			}
+			type Animal struct {
+				Species string
+			}
+			schema := Avoucher()
+			validationResult := schema.SetType(Person{}).Validate(Person{Name: "Jason"})
+			Expect(validationResult.IsValid()).To(Equal(true))
+
+			validationResult = schema.Validate(Animal{Species: "Lion"})
+			Expect(validationResult.IsValid()).To(Equal(false))
+			fmt.Println(validationResult.GetMessage())
+		})
+
+		It("should validate pointers to custom struct types", func() {
+			type Person struct {
+				Name string
+			}
+			type Animal struct {
+				Species string
+			}
+			schema := Avoucher()
+			validationResult := schema.SetType(&Person{}).Validate(&Person{Name: "Jason"})
+			Expect(validationResult.IsValid()).To(Equal(true))
+
+			validationResult = schema.SetType(Person{}).Validate(&Person{Name: "Jason"})
+			Expect(validationResult.IsValid()).To(Equal(false))
+			fmt.Println(validationResult.GetMessage())
+
+			validationResult = schema.Validate(&Animal{Species: "Lion"})
+			Expect(validationResult.IsValid()).To(Equal(false))
+			fmt.Println(validationResult.GetMessage())
+		})
 	})
 
-	It("should validate int types", func() {
-		schema := Avoucher()
-		validationResult := schema.SetType(123).Validate(43)
-		Expect(validationResult.IsValid()).To(Equal(true))
 
-		validationResult = schema.Validate("asdf")
-		Expect(validationResult.IsValid()).To(Equal(false))
-		fmt.Println(validationResult.GetMessage())
-	})
-
-	It("should validate custom struct types", func() {
-		type Person struct {
-			Name string
-		}
-		type Animal struct {
-			Species string
-		}
-		schema := Avoucher()
-		validationResult := schema.SetType(Person{}).Validate(Person{Name: "Jason"})
-		Expect(validationResult.IsValid()).To(Equal(true))
-
-		validationResult = schema.Validate(Animal{Species: "Lion"})
-		Expect(validationResult.IsValid()).To(Equal(false))
-		fmt.Println(validationResult.GetMessage())
-	})
-
-	It("should validate pointers to custom struct types", func() {
-		type Person struct {
-			Name string
-		}
-		type Animal struct {
-			Species string
-		}
-		schema := Avoucher()
-		validationResult := schema.SetType(&Person{}).Validate(&Person{Name: "Jason"})
-		Expect(validationResult.IsValid()).To(Equal(true))
-
-		validationResult = schema.SetType(Person{}).Validate(&Person{Name: "Jason"})
-		Expect(validationResult.IsValid()).To(Equal(false))
-		fmt.Println(validationResult.GetMessage())
-
-		validationResult = schema.Validate(&Animal{Species: "Lion"})
-		Expect(validationResult.IsValid()).To(Equal(false))
-		fmt.Println(validationResult.GetMessage())
-	})
 
 })
