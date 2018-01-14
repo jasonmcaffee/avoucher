@@ -7,6 +7,18 @@ import (
 	"reflect"
 )
 
+type ValidateTypePlugin struct {
+	//Get func implementations by embedding
+	ValidationPlugin
+}
+
+func NewValidateTypePlugin() ValidationPlugin{
+	name := "ValidateType"
+	return &ValidateTypePlugin{
+		ValidationPlugin: NewValidationPlugin(name, ValidateType),
+	}
+}
+
 //ValidateType
 func ValidateType(schema Schema, objToValidate interface{}) ValidationResult {
 	validationResult := NewValidationResult()

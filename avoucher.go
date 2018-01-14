@@ -6,7 +6,7 @@ import . "avoucher/validation_plugins"
 
 //DefaultValidationPlugins is a slice of validations to be performed by default.
 var defaultValidationPlugins []ValidationPlugin = []ValidationPlugin{
-	ValidateType,
+	NewValidateTypePlugin(),
 }
 
 func Avoucher() Schema {

@@ -1,4 +1,9 @@
 package interfaces
 
 //ValidationPlugin func signature for validation.
-type ValidationPlugin func(schema Schema, objToValidate interface{}) ValidationResult
+type ValidationFunc func(schema Schema, objToValidate interface{}) ValidationResult
+
+type ValidationPlugin interface {
+	GetValidationFunc() ValidationFunc
+	GetName() string
+}

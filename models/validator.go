@@ -25,7 +25,7 @@ func (v *validator) ValidateUsingValidationPlugins(schema Schema, objToValidate 
 	validationResult.SetIsValid(true)
 
 	for _, validationPlugin := range validationPlugins {
-		validationResult = validationPlugin(schema, objToValidate)
+		validationResult = validationPlugin.GetValidationFunc()(schema, objToValidate)
 		if !validationResult.IsValid() {
 			return validationResult
 		}
