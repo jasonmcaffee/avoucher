@@ -1,85 +1,74 @@
 package avoucher_test
 
 import (
+	"fmt"
 	. "avoucher"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"fmt"
 )
 
 var _ = Describe("Avoucher", func() {
 
-	Describe("Kind Validation", func(){
-		It("should validate when no kind is set", func(){
-			schema := NewSchema()
+	Describe("Kind Validation", func() {
+		It("should validate when no kind is set", func() {
+			schema := Avoucher()
 			validationResult := schema.Validate(123)
-			Expect(validationResult.IsValid).To(Equal(true))
-			Expect(validationResult.Message).To(BeNil())
+			Expect(validationResult.IsValid()).To(Equal(true))
 		})
 
-		It("should validate string", func(){
-			schema := NewSchema()
-			validationResult := schema.SetKind("").Validate("some string")
-			Expect(validationResult.IsValid).To(Equal(true))
-			Expect(validationResult.Message).To(BeNil())
+		It("should validate string", func() {
+			schema := Avoucher()
+			validationResult := schema.SetType("").Validate("some string")
+			Expect(validationResult.IsValid()).To(Equal(true))
 
 			validationResult = schema.Validate(123)
-			Expect(validationResult.IsValid).To(Equal(false))
-			Expect(validationResult.Message).ToNot(BeNil())
+			Expect(validationResult.IsValid()).To(Equal(false))
 			fmt.Println(validationResult.GetMessage())
 		})
 
-		It("should validate int", func(){
-			schema := NewSchema()
-			validationResult := schema.SetKind(123).Validate(43)
-			Expect(validationResult.IsValid).To(Equal(true))
-			Expect(validationResult.Message).To(BeNil())
+		It("should validate int", func() {
+			schema := Avoucher()
+			validationResult := schema.SetType(123).Validate(43)
+			Expect(validationResult.IsValid()).To(Equal(true))
 
 			validationResult = schema.Validate("asdf")
-			Expect(validationResult.IsValid).To(Equal(false))
-			Expect(validationResult.Message).ToNot(BeNil())
+			Expect(validationResult.IsValid()).To(Equal(false))
 			fmt.Println(validationResult.GetMessage())
 		})
 
-		It("should validate custom structs", func(){
-			type Person struct{
+		It("should validate custom structs", func() {
+			type Person struct {
 				Name string
 			}
-			type Animal struct{
+			type Animal struct {
 				Species string
 			}
-			schema := NewSchema()
-			validationResult := schema.SetKind(Person{}).Validate(Person{Name:"Jason"})
-			Expect(validationResult.IsValid).To(Equal(true))
-			Expect(validationResult.Message).To(BeNil())
+			schema := Avoucher()
+			validationResult := schema.SetType(Person{}).Validate(Person{Name: "Jason"})
+			Expect(validationResult.IsValid()).To(Equal(true))
 
-			validationResult = schema.Validate(Animal{Species:"Lion"})
-			Expect(validationResult.IsValid).To(Equal(false))
-			Expect(validationResult.Message).ToNot(BeNil())
+			validationResult = schema.Validate(Animal{Species: "Lion"})
+			Expect(validationResult.IsValid()).To(Equal(false))
 			fmt.Println(validationResult.GetMessage())
 		})
 
-		It("should validate pointers to custom structs", func(){
-			type Person struct{
+		It("should validate pointers to custom structs", func() {
+			type Person struct {
 				Name string
 			}
-			type Animal struct{
+			type Animal struct {
 				Species string
 			}
-			schema := NewSchema()
-			validationResult := schema.SetKind(&Person{}).Validate(&Person{Name:"Jason"})
-			Expect(validationResult.IsValid).To(Equal(true))
-			Expect(validationResult.Message).To(BeNil())
+			schema := Avoucher()
+			validationResult := schema.SetType(&Person{}).Validate(&Person{Name: "Jason"})
+			Expect(validationResult.IsValid()).To(Equal(true))
 
-			validationResult = schema.SetKind(Person{}).Validate(&Person{Name:"Jason"})
-			Expect(validationResult.IsValid).To(Equal(false))
-			Expect(validationResult.Message).ToNot(BeNil())
+			validationResult = schema.SetType(Person{}).Validate(&Person{Name: "Jason"})
+			Expect(validationResult.IsValid()).To(Equal(false))
 			fmt.Println(validationResult.GetMessage())
 
-			validationResult = schema.Validate(&Animal{Species:"Lion"})
-			Expect(validationResult.IsValid).To(Equal(false))
-			Expect(validationResult.Message).ToNot(BeNil())
+			validationResult = schema.Validate(&Animal{Species: "Lion"})
+			Expect(validationResult.IsValid()).To(Equal(false))
 			fmt.Println(validationResult.GetMessage())
 		})
 
