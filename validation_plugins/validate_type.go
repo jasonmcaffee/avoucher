@@ -24,12 +24,13 @@ func NewValidateTypePlugin() ValidationPlugin{
 func (v *ValidateTypePlugin) ValidateType(schema Schema, reflectedObjectToValidate ReflectedObjectToValidate) ValidationResult {
 	//use embedded CreateValidationResult to set IsValid = true, TestName = v.Name
 	validationResult := v.CreateValidationResult()
+
 	//consider valid to be true when Kind is not set
 	if schema.GetIsTypeSet() == false {
 		return validationResult
 	}
 
-	//reflect the types
+	//get the reflected types, so reflect isn't called in each validation func
 	schemaType := schema.GetTypeReflectedType()
 	objType := reflectedObjectToValidate.GetReflectedType()
 
