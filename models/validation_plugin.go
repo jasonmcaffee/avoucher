@@ -33,3 +33,10 @@ func (v *validationPlugin) SetName(pluginName string){
 func (v *validationPlugin) GetName() string{
 	return v.Name
 }
+
+func (v *validationPlugin) CreateValidationResult() ValidationResult{
+	validationResult := NewValidationResult()
+	validationResult.SetIsValid(true)
+	validationResult.SetTestName(v.Name)
+	return validationResult
+}

@@ -16,7 +16,7 @@ var _ = Describe("Validate Type", func() {
 		Expect(validationResult.IsValid()).To(Equal(true))
 	})
 
-	It("should validate string typs", func() {
+	It("should validate string types", func() {
 		schema := Avoucher()
 		validationResult := schema.SetType("").Validate("some string")
 		Expect(validationResult.IsValid()).To(Equal(true))
