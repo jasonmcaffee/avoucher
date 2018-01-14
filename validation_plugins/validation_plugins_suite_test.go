@@ -7,8 +7,7 @@ import (
 "testing"
 )
 
-func TestAvoucher(t *testing.T) {
+func TestValidationPlugins(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Avoucher Suite")
+	RunSpecs(t, "Validation Plugins Suite")
 }
-
