@@ -33,6 +33,7 @@ type Schema interface {
 	Uint8() Schema
 	Uint16() Schema
 	Uint32() Schema
+	Uint64() Schema
 	Int() Schema
 	Int8() Schema
 	Int16() Schema
@@ -49,6 +50,7 @@ type Schema interface {
 	Uint8Pointer() Schema
 	Uint16Pointer() Schema
 	Uint32Pointer() Schema
+	Uint64Pointer() Schema
 	IntPointer() Schema
 	Int8Pointer() Schema
 	Int16Pointer() Schema

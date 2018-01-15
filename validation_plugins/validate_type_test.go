@@ -88,6 +88,70 @@ var _ = Describe("Validate Type", func() {
 			Expect(allOtherTypesAreInvalid(s, 1)).To(Equal(true))
 		})
 
+		It("should provide Uint8 function which helps strictly validate that objectToValidate type is uint8", func() {
+			s := Avoucher().Uint8()
+			Expect(s.Validate(gti.Uint8).IsValid()).To(Equal(true))
+			Expect(s.Validate(gti.Byte).IsValid()).To(Equal(true))
+			Expect(allOtherTypesAreInvalid(s, 2)).To(Equal(true))
+		})
+
+		It("should provide Uint16 function which helps strictly validate that objectToValidate type is uint16", func() {
+			s := Avoucher().Uint16()
+			Expect(s.Validate(gti.Uint16).IsValid()).To(Equal(true))
+			Expect(allOtherTypesAreInvalid(s, 1)).To(Equal(true))
+		})
+
+		It("should provide Uint32 function which helps strictly validate that objectToValidate type is uint32", func() {
+			s := Avoucher().Uint32()
+			Expect(s.Validate(gti.Uint32).IsValid()).To(Equal(true))
+			Expect(allOtherTypesAreInvalid(s, 1)).To(Equal(true))
+		})
+
+		It("should provide Uint64 function which helps strictly validate that objectToValidate type is uint64", func() {
+			s := Avoucher().Uint64()
+			Expect(s.Validate(gti.Uint64).IsValid()).To(Equal(true))
+			Expect(allOtherTypesAreInvalid(s, 1)).To(Equal(true))
+		})
+
+		//other numeric
+		It("should provide Float32 function which helps strictly validate that objectToValidate type is float32", func() {
+			s := Avoucher().Float32()
+			Expect(s.Validate(gti.Float32).IsValid()).To(Equal(true))
+			Expect(allOtherTypesAreInvalid(s, 1)).To(Equal(true))
+		})
+
+		It("should provide Float64 function which helps strictly validate that objectToValidate type is float64", func() {
+			s := Avoucher().Float64()
+			Expect(s.Validate(gti.Float64).IsValid()).To(Equal(true))
+			Expect(allOtherTypesAreInvalid(s, 1)).To(Equal(true))
+		})
+
+		It("should provide Complex64 function which helps strictly validate that objectToValidate type is complex64", func() {
+			s := Avoucher().Complex64()
+			Expect(s.Validate(gti.Complex64).IsValid()).To(Equal(true))
+			Expect(allOtherTypesAreInvalid(s, 1)).To(Equal(true))
+		})
+
+		It("should provide Complex128 function which helps strictly validate that objectToValidate type is complex128", func() {
+			s := Avoucher().Complex128()
+			Expect(s.Validate(gti.Complex128).IsValid()).To(Equal(true))
+			Expect(allOtherTypesAreInvalid(s, 1)).To(Equal(true))
+		})
+
+		It("should provide Byte function which helps strictly validate that objectToValidate type is byte", func() {
+			s := Avoucher().Byte()
+			Expect(s.Validate(gti.Byte).IsValid()).To(Equal(true))
+			Expect(s.Validate(gti.Uint8).IsValid()).To(Equal(true))
+			Expect(allOtherTypesAreInvalid(s, 2)).To(Equal(true)) //byte == uint8 and byte == byte
+		})
+
+		It("should provide Rune function which helps strictly validate that objectToValidate type is rune", func() {
+			s := Avoucher().Rune()
+			Expect(s.Validate(gti.Rune).IsValid()).To(Equal(true))
+			Expect(s.Validate(gti.Int32).IsValid()).To(Equal(true))
+			Expect(allOtherTypesAreInvalid(s, 2)).To(Equal(true)) //rune == int32 and rune == rune
+		})
+
 	})
 
 	Describe("Misc Type Validation", func(){

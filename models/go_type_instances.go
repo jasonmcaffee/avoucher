@@ -135,7 +135,6 @@ func BuildSliceOfAllFieldValuesInObject(objToReflect interface{}, ignoreFieldsWi
 	return result
 }
 
-
 func contains(s []string, e string) bool {
 	for _, a := range s {
 		if a == e {
@@ -144,23 +143,3 @@ func contains(s []string, e string) bool {
 	}
 	return false
 }
-//
-////helper to reflectively iterate over each Field in a given object, retrieve its value, and return slice of all field values.
-//func BuildSliceOfAllFieldValuesInObject(objToReflect interface{}) []interface{} {
-//	result := []interface{}{}
-//	reflectedObjectValue := reflect.ValueOf(objToReflect)
-//	reflectedObjectIndirect := reflect.Indirect(reflectedObjectValue)
-//	for i := 0; i < reflectedObjectIndirect.NumField(); i++ {
-//		field := reflectedObjectIndirect.Field(i)
-//		if field.Kind() == reflect.Ptr{
-//			fieldAsPointer:= field.Type()//field.Pointer()
-//			fmt.Println("ptr is a Type", field.Type(), " fieldAsPointer is ", fieldAsPointer)
-//			result = append(result, fieldAsPointer)
-//		}else{
-//			fieldAsInterface := field.Interface()
-//			result = append(result, fieldAsInterface)
-//		}
-//
-//	}
-//	return result
-//}
