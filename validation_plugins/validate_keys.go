@@ -41,8 +41,8 @@ func (v *ValidateKeysPlugin) ValidateKeys(schema Schema, reflectedObjectToValida
 
 	fmt.Println("Validating keys on type: ", reflectedObjectValue.Type(),  " kind: ", reflectedObjectValue.Kind())
 	switch reflectedObjectValue.Kind(){
-	case reflect.Struct:
-		validationResult = validateStruct(schema, reflectedObjectToValidate, validationResult)
+	case reflect.Map:
+		validationResult = validateMap(schema, reflectedObjectToValidate, validationResult)
 	default:
 		validationResult = validateStruct(schema, reflectedObjectToValidate, validationResult)
 		//validationResult.SetIsValid(false)
@@ -50,6 +50,48 @@ func (v *ValidateKeysPlugin) ValidateKeys(schema Schema, reflectedObjectToValida
 	}
 
 	return validationResult
+}
+
+
+func validateMap(schema Schema, reflectedObjectToValidate ReflectedObjectToValidate, validationResult ValidationResult) ValidationResult{
+	//get reflection objects needed in order to access Fields
+	reflectedObjectValue := reflectedObjectToValidate.GetReflectedValue()
+	//reflectedObjectIndirect := reflect.Indirect(reflectedObjectValue)
+
+	//iterate over each Key defined in the schema and ensure it exists on the objectToValidate
+	schemaKeys := schema.GetKeys()
+	for keyName, schema := range schemaKeys {
+		//get the field by name
+		//field := reflectedObjectIndirect.FieldByName(keyName)
+
+		keyValuePtr := getMapKeyValueByName(reflectedObjectValue, keyName)
+		if keyValuePtr == nil{
+			validationResult.SetIsValid(false)
+			return validationResult
+		}
+		keyValue := *keyValuePtr
+		keyValueAsInterface := keyValue.Interface()
+		validationResult = schema.Validate(keyValueAsInterface) //TODO: don't reassign validationResult so original TestName etc passed in is maintained.
+		if !validationResult.IsValid(){
+			return validationResult
+		}
+	}
+
+	return validationResult
+}
+
+func getMapKeyValueByName(reflectedMap reflect.Value, name string) *reflect.Value{
+	var val *reflect.Value
+	for _, key := range reflectedMap.MapKeys(){
+		keyAsString := key.String()
+		if keyAsString == name{
+			v := reflectedMap.MapIndex(key)
+			val = &v
+			break
+			//fmt.Println("keyValue type", val.Type(), "key.Type()", key.Type(), "keyAsString", keyAsString)
+		}
+	}
+	return val
 }
 
 func validateStruct(schema Schema, reflectedObjectToValidate ReflectedObjectToValidate, validationResult ValidationResult) ValidationResult{
@@ -71,7 +113,7 @@ func validateStruct(schema Schema, reflectedObjectToValidate ReflectedObjectToVa
 
 		//cast the field as an interface, then pass it to the Schema assigned to the key
 		fieldAsInterface := field.Interface()
-		validationResult = schema.Validate(fieldAsInterface)
+		validationResult = schema.Validate(fieldAsInterface) //TODO: don't reassign validationResult so original TestName etc passed in is maintained.
 		if !validationResult.IsValid(){
 			return validationResult
 		}

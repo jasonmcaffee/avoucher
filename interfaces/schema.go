@@ -63,6 +63,10 @@ type Schema interface {
 	BytePointer() Schema
 	RunePointer() Schema
 
+	//Other types
+	String() Schema
+	StringPointer() Schema
+
 	//SetType is used to confirm that validated objects are of the same Type
 	SetType(interface{}) Schema
 	GetType() interface{}
@@ -72,6 +76,7 @@ type Schema interface {
 	GetTypeReflectedType() reflect.Type
 
 	//Keys are used to confirm that validated objects contain properties that conform to Schemas
+	Keys(map[string]Schema) Schema
 	SetKeys(map[string]Schema) Schema
 	GetKeys()map[string]Schema
 

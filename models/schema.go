@@ -12,7 +12,7 @@ type (
 		ReflectedType reflect.Type
 
 		//properties on the struct to be validated.
-		Keys map[string]Schema
+		TheKeys   map[string]Schema
 		Validator Validator
 	}
 )
@@ -162,6 +162,15 @@ func (s *schema) RunePointer() Schema{
 	return s.SetType(t)
 }
 
+//shortcuts for other types ===========================================================================================
+func (s *schema) String() Schema{
+	var t string
+	return s.SetType(t)
+}
+func (s *schema) StringPointer() Schema{
+	var t string
+	return s.SetType(&t)
+}
 
 
 func (s *schema) SetType(t interface{}) Schema {
@@ -183,14 +192,17 @@ func (s *schema) GetIsTypeSet() bool{
 	return s.IsTypeSet
 }
 
-//TODO: if Keys is already set, iterate over keys and overwrite appropriate Keys
+//TODO: if TheKeys is already set, iterate over keys and overwrite appropriate TheKeys
+func (s *schema) Keys(keys map[string]Schema) Schema {
+	return s.SetKeys(keys)
+}
 func (s *schema) SetKeys(keys map[string]Schema) Schema {
-	s.Keys = keys
+	s.TheKeys = keys
 	return s
 }
 
 func (s *schema) GetKeys() map[string]Schema{
-	return s.Keys
+	return s.TheKeys
 }
 
 func (s *schema) Validate(objToValidate interface{}) ValidationResult {
