@@ -256,11 +256,6 @@ var _ = Describe("Validate Type", func() {
 			Expect(allOtherTypesAreInvalid(s, 2)).To(Equal(true)) //rune == int32 and rune == rune
 		})
 
-
-
-
-
-
 	})
 
 	Describe("Misc Type Validation", func(){
@@ -272,7 +267,7 @@ var _ = Describe("Validate Type", func() {
 
 		It("should validate string types", func() {
 			schema := Avoucher()
-			validationResult := schema.SetType("").Validate("some string")
+			validationResult := schema.String().Validate("some string")
 			Expect(validationResult.IsValid()).To(Equal(true))
 
 			validationResult = schema.Validate(123)

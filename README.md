@@ -77,7 +77,7 @@ Describe("Examples", func(){
 
         Expect(personSchema.Validate(person).IsValid()).To(Equal(true))
     })
-	})
+})
 ```
 
 

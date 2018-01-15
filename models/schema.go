@@ -11,6 +11,10 @@ type (
 		IsTypeSet     bool
 		ReflectedType reflect.Type
 
+		//the kind of obect we are validating.
+		TheKind				reflect.Kind
+		IsKindSet			bool
+
 		//properties on the struct to be validated.
 		TheKeys   map[string]Schema
 		Validator Validator
@@ -172,7 +176,27 @@ func (s *schema) StringPointer() Schema{
 	return s.SetType(&t)
 }
 
+//Shortcuts for kinds ==================================================================================================
+func (s *schema) Slice() Schema{
+	return s.SetKind(reflect.Slice)
+}
 
+//Kind related funcs ===================================================================================================
+func (s *schema) SetKind(k reflect.Kind) Schema{
+	s.TheKind = k
+	s.IsKindSet = true
+	return s
+}
+
+func (s *schema) GetKind() reflect.Kind{
+	return s.TheKind
+}
+
+func (s *schema) GetIsKindSet() bool{
+	return s.IsKindSet
+}
+
+//Type related funcs ===================================================================================================
 func (s *schema) SetType(t interface{}) Schema {
 	s.TheType = t
 	s.IsTypeSet = true
