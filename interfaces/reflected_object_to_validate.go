@@ -8,4 +8,6 @@ type ReflectedObjectToValidate interface {
 	GetObjectToValidate() interface{}
 	//GetReflectedType returns the value of reflect.TypeOf(GetObjectToValidate())
 	GetReflectedType() reflect.Type
+	//GetReflectedValue returns the value of reflect.ValueOf(GetObjectToValidate())
+	GetReflectedValue() reflect.Value
 }

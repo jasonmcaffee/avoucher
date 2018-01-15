@@ -1,6 +1,9 @@
 # Avoucher
 Validation library for Go.
 
+## Usage
+
+
 ## Developer Setup
 
 ### Glide
