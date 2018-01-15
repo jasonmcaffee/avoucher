@@ -96,6 +96,74 @@ func (s *schema) Rune() Schema{
 	return s.SetType(t)
 }
 
+func (s *schema) IntPointer() Schema{
+	var t int
+	return s.SetType(t)
+}
+func (s *schema) Int8Pointer() Schema{
+	var t int8
+	return s.SetType(t)
+}
+func (s *schema) Int16Pointer() Schema{
+	var t int16
+	return s.SetType(t)
+}
+func (s *schema) Int32Pointer() Schema{
+	var t int32
+	return s.SetType(t)
+}
+func (s *schema) Int64Pointer() Schema{
+	var t int64
+	return s.SetType(t)
+}
+
+func (s *schema) UintPointer() Schema{
+	var t uint
+	return s.SetType(t)
+}
+func (s *schema) Uint8Pointer() Schema{
+	var t uint8
+	return s.SetType(t)
+}
+func (s *schema) Uint16Pointer() Schema{
+	var t uint16
+	return s.SetType(t)
+}
+func (s *schema) Uint32Pointer() Schema{
+	var t uint32
+	return s.SetType(t)
+}
+func (s *schema) Uint64Pointer() Schema{
+	var t uint64
+	return s.SetType(t)
+}
+func (s *schema) Float32Pointer() Schema{
+	var t float32
+	return s.SetType(t)
+}
+func (s *schema) Float64Pointer() Schema{
+	var t float64
+	return s.SetType(t)
+}
+func (s *schema) Complex64Pointer() Schema{
+	var t complex64
+	return s.SetType(t)
+}
+func (s *schema) Complex128Pointer() Schema{
+	var t complex128
+	return s.SetType(t)
+}
+func (s *schema) BytePointer() Schema{
+	var t byte
+	return s.SetType(t)
+}
+func (s *schema) RunePointer() Schema{
+	var t rune
+	return s.SetType(t)
+}
+
+
+
 func (s *schema) SetType(t interface{}) Schema {
 	s.TheType = t
 	s.IsTypeSet = true

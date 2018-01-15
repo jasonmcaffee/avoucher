@@ -45,6 +45,22 @@ type Schema interface {
 	Byte() Schema
 	Rune() Schema
 
+	UintPointer() Schema
+	Uint8Pointer() Schema
+	Uint16Pointer() Schema
+	Uint32Pointer() Schema
+	IntPointer() Schema
+	Int8Pointer() Schema
+	Int16Pointer() Schema
+	Int32Pointer() Schema
+	Int64Pointer() Schema
+	Float32Pointer() Schema
+	Float64Pointer() Schema
+	Complex64Pointer() Schema
+	Complex128Pointer() Schema
+	BytePointer() Schema
+	RunePointer() Schema
+
 	//SetType is used to confirm that validated objects are of the same Type
 	SetType(interface{}) Schema
 	GetType() interface{}
